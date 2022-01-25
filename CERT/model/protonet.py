@@ -193,7 +193,7 @@ class ProtoNet(nn.Module):
             print('Please provide a path')
         else:
             # print(f'Loading model from: {path}')
-            self.encoder = torch.load('../CERT/saved_models/' + path)
+            self.encoder = torch.load('./CERT/saved_models/' + path)
             self.encoder.to(self.device)
 
     def set_forward_loss(self, sample):
@@ -292,13 +292,13 @@ class ProtoNet(nn.Module):
             epoch_acc = running_acc / epoch_size
             if min_loss >= epoch_loss:
                 min_loss = epoch_loss
-                torch.save(self.encoder, '../CERT/saved_models/' + path)
+                torch.save(self.encoder, './CERT/saved_models/' + path)
             # print('Epoch {:d} -- Loss: {:.4f} Acc: {:.4f}'.format(epoch + 1, epoch_loss, epoch_acc))
             epoch += 1
             scheduler.step()
 
     def test(self, train_iter, test_iter, path='PN.pth'):
-        self.encoder = torch.load('../CERT/saved_models/' + path)
+        self.encoder = torch.load('./CERT/saved_models/' + path)
         self.encoder.to(self.device)
         self.encoder.eval()
         embs = []
@@ -346,7 +346,7 @@ class ProtoNet(nn.Module):
                 'protoes': protoes}, f1_score(y_true, y_pred, average='macro')
 
     def embedding(self, train_iter, test_iter, path='PN.pth'):
-        self.encoder = torch.load('../CERT/saved_models/' + path)
+        self.encoder = torch.load('./CERT/saved_models/' + path)
         self.encoder.to(self.device)
         self.encoder.eval()
         embs = []
@@ -556,12 +556,12 @@ class ProtoTrainer(object):
 
 
     def save_best_model(self):
-        os.rename('../CERT/saved_models/current'+str(self.name)+'.pth', '../CERT/saved_models/temp_best'+str(self.name)+'.pth')
+        os.rename('./CERT/saved_models/current'+str(self.name)+'.pth', './CERT/saved_models/temp_best'+str(self.name)+'.pth')
 
 
     def update_best_model(self):
-        os.remove('../CERT/saved_models/best'+str(self.name)+'.pth')
-        os.rename('../CERT/saved_models/temp_best'+str(self.name)+'.pth', '../CERT/saved_models/best'+str(self.name)+'.pth')
+        os.remove('./CERT/saved_models/best'+str(self.name)+'.pth')
+        os.rename('./CERT/saved_models/temp_best'+str(self.name)+'.pth', './CERT/saved_models/best'+str(self.name)+'.pth')
 
     def final_training_testing(self, df_seen, test_x, test_y):
         train_x = df_seen.iloc[:, :-3].values

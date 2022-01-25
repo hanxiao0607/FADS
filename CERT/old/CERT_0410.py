@@ -14,7 +14,7 @@ def arg_parser():
     """
     parser = ArgumentParser()
     parser.add_argument('--random_seed', help='random seed', default=6)
-    parser.add_argument('--dataset_dir', help='please choose dataset directory', default='./Datasets/final_data.csv')
+    parser.add_argument('--dataset_dir', help='please choose dataset directory', default='./Datasets/CERT52_small.csv')
     parser.add_argument('--out_dim', help='output dimensions', default=64)
     parser.add_argument('--lr', help='learning rate', default=0.001)
     parser.add_argument('--device', help='device cpu or cuda', default='cuda:0')

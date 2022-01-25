@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="xiaohan@144.39.110.23:22" remoteFilesAllowedToDisappearOnAutoupload="false">
+  <component name="PublishConfigData" autoUpload="Always" serverName="3090@129.123.29.152:22" createEmptyFolders="true" remoteFilesAllowedToDisappearOnAutoupload="false" autoUploadExternalChanges="true" showAutoUploadSettingsWarning="false">
     <serverData>
-      <paths name="xiaohan@129.123.25.164:22">
+      <paths name="2080@129.123.25.164:22">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>
-      <paths name="xiaohan@144.39.110.23:22">
+      <paths name="3090@129.123.29.152:22">
         <serverdata>
           <mappings>
-            <mapping deploy="/FADS" local="$PROJECT_DIR$" />
+            <mapping deploy="/FADS" local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>

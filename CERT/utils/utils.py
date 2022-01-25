@@ -3,9 +3,6 @@ import numpy as np
 import torch
 import pandas as pd
 import warnings
-from gensim.models import Word2Vec
-from nltk.tokenize import RegexpTokenizer
-from tqdm import tqdm
 
 
 warnings.filterwarnings("ignore")
