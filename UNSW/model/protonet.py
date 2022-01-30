@@ -425,6 +425,16 @@ class ProtoTrainer(object):
         return df_seen, df_seen_eval, df_unseen, seen_f1_ad, seen_f1
 
     def training_baseline(self, df_seen, df_seen_eval, df_unseen, test_x, test_y):
+        # n_clusters = set(df_unseen['y_pred'].values)
+        # for ind, val in enumerate(n_clusters):
+        #     if ind == 0:
+        #         n = int(0.1 * len(df_unseen.loc[df_unseen['y_pred'] == val]))
+        #         df_samples = df_unseen.loc[df_unseen['y_pred'] == val].nsmallest(n, 'dist')
+        #     else:
+        #         n = int(0.1 * len(df_unseen.loc[df_unseen['y_pred'] == val]))
+        #         df_samples = pd.concat([df_samples, df_unseen.loc[df_unseen['y_pred'] == val].nsmallest(n, 'dist')])
+        #
+        # df_seen_0 = pd.concat([df_seen, df_seen_eval, df_samples], axis=0).reset_index(drop=True)
         df_seen_0 = pd.concat([df_seen, df_seen_eval, df_unseen], axis=0).reset_index(drop=True)
         train_x = df_seen_0.iloc[:, :-3].values
         train_y = df_seen_0['y_pred'].values
