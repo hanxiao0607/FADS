@@ -13,7 +13,7 @@ def arg_parser():
     :return:
     """
     parser = ArgumentParser()
-    parser.add_argument('--random_seed', help='random seed', default=0)
+    parser.add_argument('--random_seed', help='random seed', default=9)
     parser.add_argument('--dataset_dir', help='please choose dataset directory', default='./UNSW/Datasets/NUSW_small.csv')
     parser.add_argument('--out_dim', help='output dimensions', default=128)
     parser.add_argument('--lr', help='learning rate', default=0.001)

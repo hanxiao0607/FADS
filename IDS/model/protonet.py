@@ -11,6 +11,7 @@ import torch.optim as optim
 import torch.nn.functional as F
 from torch.autograd import Variable
 from torch.utils.data import DataLoader, Dataset
+from IDS.utils import utils
 import os
 
 from sklearn.metrics import classification_report, f1_score, roc_auc_score, average_precision_score
@@ -276,6 +277,7 @@ class ProtoNet(nn.Module):
         y_vals = []
         y_all = []
         y_dist = []
+        y_normal = []
         # print('Make prediction with centers')
         for batch in test_iter:
             src = batch[0].to(self.device)
@@ -289,6 +291,7 @@ class ProtoNet(nn.Module):
             y_all.extend(list(F.softmax(-dists, dim=1).detach().cpu().numpy()))
             y_pred.extend(list(y_hat.detach().cpu().numpy()))
             y_vals.extend(list(y_val.detach().cpu().numpy()))
+            y_normal.extend(list(dists.detach().cpu().numpy()[:, 0].reshape(-1)))
         # print(multilabel_confusion_matrix(y_true, y_pred))
         # print(classification_report(y_true, y_pred, digits=5))
 
@@ -297,6 +300,7 @@ class ProtoNet(nn.Module):
                 'y_vals': y_vals,
                 'y_all': y_all,
                 'y_dist':y_dist,
+                'y_normal':y_normal,
                 'protoes': protoes}, f1_score(y_true, y_pred, average='macro')
 
     def embedding(self, train_iter, test_iter, path='PN.pth'):
@@ -325,6 +329,7 @@ class ProtoNet(nn.Module):
         y_vals = []
         y_all = []
         y_dist = []
+        y_normal = []
         # print('Make prediction with centers')
         for batch in test_iter:
             src = batch[0].to(self.device)
@@ -339,6 +344,7 @@ class ProtoNet(nn.Module):
             y_all.extend(list(F.softmax(-dists, dim=1).detach().cpu().numpy()))
             y_pred.extend(list(y_hat.detach().cpu().numpy()))
             y_vals.extend(list(y_val.detach().cpu().numpy()))
+            y_normal.extend(list(dists.detach().cpu().numpy()[:,0].reshape(-1)))
         # print(multilabel_confusion_matrix(y_true, y_pred))
         # print(classification_report(y_true, y_pred, digits=5))
 
@@ -348,6 +354,7 @@ class ProtoNet(nn.Module):
                 'y_vals': y_vals,
                 'y_all': y_all,
                 'y_dist': y_dist,
+                'y_normal': y_normal,
                 'protoes': protoes}
 
 
@@ -411,6 +418,8 @@ class ProtoTrainer(object):
         print(classification_report(test_true_ab, test_pred_ab, digits=5))
         print('Anomaly Detection AUC-ROC: {:.5f}'.format(roc_auc_score(test_true_ab, test_pred_ab)))
         print('Anomaly Detection AUC-PR: {:.5f}'.format(average_precision_score(test_true_ab, test_pred_ab)))
+        print('Anomaly Detection FPR-AT-95-TPR: {:.5f}'.format(
+            utils.getfpr95tpr(y_true=test_true_ab, dist=test_result['y_normal'])))
 
         unseen_iter = get_iter(list_to_tensor(df_unseen.iloc[:, :-3].values), df_unseen['y_true'].values)
         dic = self.best_net.embedding(train_iter, unseen_iter, path='best'+self.name+'.pth')
@@ -425,17 +434,17 @@ class ProtoTrainer(object):
         return df_seen, df_seen_eval, df_unseen, seen_f1_ad, seen_f1
 
     def training_baseline(self, df_seen, df_seen_eval, df_unseen, test_x, test_y):
-        # n_clusters = set(df_unseen['y_pred'].values)
-        # for ind, val in enumerate(n_clusters):
-        #     if ind == 0:
-        #         n = int(0.1 * len(df_unseen.loc[df_unseen['y_pred'] == val]))
-        #         df_samples = df_unseen.loc[df_unseen['y_pred'] == val].nsmallest(n, 'dist')
-        #     else:
-        #         n = int(0.1 * len(df_unseen.loc[df_unseen['y_pred'] == val]))
-        #         df_samples = pd.concat([df_samples, df_unseen.loc[df_unseen['y_pred'] == val].nsmallest(n, 'dist')])
-        #
-        # df_seen_0 = pd.concat([df_seen, df_seen_eval, df_samples], axis=0).reset_index(drop=True)
-        df_seen_0 = pd.concat([df_seen, df_seen_eval, df_unseen], axis=0).reset_index(drop=True)
+        n_clusters = set(df_unseen['y_pred'].values)
+        for ind, val in enumerate(n_clusters):
+            if ind == 0:
+                n = int(0.1 * len(df_unseen.loc[df_unseen['y_pred'] == val]))
+                df_samples = df_unseen.loc[df_unseen['y_pred'] == val].nsmallest(n, 'dist')
+            else:
+                n = int(0.1 * len(df_unseen.loc[df_unseen['y_pred'] == val]))
+                df_samples = pd.concat([df_samples, df_unseen.loc[df_unseen['y_pred'] == val].nsmallest(n, 'dist')])
+
+        df_seen_0 = pd.concat([df_seen, df_seen_eval, df_samples], axis=0).reset_index(drop=True)
+        # df_seen_0 = pd.concat([df_seen, df_seen_eval, df_unseen], axis=0).reset_index(drop=True)
         train_x = df_seen_0.iloc[:, :-3].values
         train_y = df_seen_0['y_pred'].values
         self.temp_net.train(self.optim_temp, train_x, train_y, self.n_way, self.n_support, self.n_query,
@@ -458,6 +467,8 @@ class ProtoTrainer(object):
         print(classification_report(test_true_ab, test_pred_ab, digits=5))
         print('Anomaly Detection AUC-ROC: {:.5f}'.format(roc_auc_score(test_true_ab, test_pred_ab)))
         print('Anomaly Detection AUC-PR: {:.5f}'.format(average_precision_score(test_true_ab, test_pred_ab)))
+        print('Anomaly Detection FPR-AT-95-TPR: {:.5f}'.format(
+            utils.getfpr95tpr(y_true=test_true_ab, dist=test_result['y_normal'])))
 
         self.temp_net.to('cpu')
 
@@ -546,6 +557,8 @@ class ProtoTrainer(object):
         print(classification_report(test_true_ab, test_pred_ab, digits=5))
         print('Anomaly Detection AUC-ROC: {:.5f}'.format(roc_auc_score(test_true_ab, test_pred_ab)))
         print('Anomaly Detection AUC-PR: {:.5f}'.format(average_precision_score(test_true_ab, test_pred_ab)))
+        print('Anomaly Detection FPR-AT-95-TPR: {:.5f}'.format(utils.getfpr95tpr(y_true=test_true_ab, dist=test_result['y_normal'])))
         print(df_seen.groupby(['y_pred', 'y_true']).count())
+
 
 

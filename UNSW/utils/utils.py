@@ -3,6 +3,11 @@ import numpy as np
 import torch
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.metrics import confusion_matrix
+import warnings
+
+
+warnings.filterwarnings("ignore")
 
 
 def set_seed(seed=42):
@@ -130,3 +135,34 @@ def data2df(x, y):
     df['y_pred'] = y
     df['dist'] = 0
     return df
+
+def getfpr95tpr(y_true, dist, steps=10000):
+    start = min(dist)
+    end = max(dist)
+    gap = (end - start) / steps
+    count = 0.0
+    fpr_all = 0.0
+    for delta in np.arange(start, end, gap):
+        y_pred = np.zeros(len(y_true))
+        y_pred = np.where(dist >= delta, 1, y_pred)
+        tn, fp, fn, tp = confusion_matrix(y_true=y_true, y_pred=y_pred).ravel()
+        tpr = tp / (tp + fn)
+        fpr = fp / (fp + tn)
+        if tpr <= 0.96 and tpr >= 0.94:
+            fpr_all += fpr
+            count += 1
+    if count == 0:
+        for delta in np.arange(start, end, gap):
+            y_pred = np.zeros(len(y_true))
+            y_pred = np.where(dist >= delta, 1, y_pred)
+            tn, fp, fn, tp = confusion_matrix(y_true=y_true, y_pred=y_pred).ravel()
+            tpr = tp / (tp + fn)
+            fpr = fp / (fp + tn)
+            if tpr >= 0.94:
+                fpr_all += fpr
+                count += 1
+    if count == 0:
+        fpr_final = 1
+    else:
+        fpr_final = fpr_all / count
+    return fpr_final

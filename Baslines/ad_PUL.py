@@ -18,11 +18,13 @@ def main():
         scaler = MinMaxScaler()
         y_pred = pu_estimator.predict(test_x)
         y_pred = np.where(y_pred < 0, 0, y_pred)
-        y_prob = scaler.fit_transform(pu_estimator.predict_proba(test_x).reshape(-1, 1))
+        y_prob = scaler.fit_transform(pu_estimator.predict_proba(test_x).reshape(-1, 1)).reshape(-1)
         print('Anomaly Detection report:')
         print(classification_report(y_true=test_y, y_pred=y_pred, digits=5))
         print('Anomaly Detection AUC-ROC: {:.5f}'.format(roc_auc_score(test_y, y_pred)))
         print('Anomaly Detection AUC-PR: {:.5f}'.format(average_precision_score(test_y, y_pred)))
+        print('Anomaly Detection FPR-AT-95-TPR: {:.5f}'.format(
+            utils.getfpr95tpr(y_true=test_y, dist=y_prob)))
     dir_IDS = '../IDS/Datasets/IDS2018_small.csv'
     print('-'*20)
     print('IDS')
@@ -34,27 +36,31 @@ def main():
         scaler = MinMaxScaler()
         y_pred = pu_estimator.predict(test_x)
         y_pred = np.where(y_pred < 0, 0, y_pred)
-        y_prob = scaler.fit_transform(pu_estimator.predict_proba(test_x).reshape(-1, 1))
+        y_prob = scaler.fit_transform(pu_estimator.predict_proba(test_x).reshape(-1, 1)).reshape(-1)
         print('Anomaly Detection report:')
         print(classification_report(y_true=test_y, y_pred=y_pred, digits=5))
         print('Anomaly Detection AUC-ROC: {:.5f}'.format(roc_auc_score(test_y, y_pred)))
         print('Anomaly Detection AUC-PR: {:.5f}'.format(average_precision_score(test_y, y_pred)))
+        print('Anomaly Detection FPR-AT-95-TPR: {:.5f}'.format(
+            utils.getfpr95tpr(y_true=test_y, dist=y_prob)))
     dir_CERT = '../CERT/Datasets/CERT52_small.csv'
     print('-'*20)
     print('CERT')
     for i in lst:
-        X, y, test_x, test_y = utils.preprocessing_CERT_EMB_PUL(dir_CERT, n_sup=10, seed=i)
+        X, y, test_x, test_y = utils.preprocessing_CERT_CV_PUL(dir_CERT, n_sup=10, seed=i)
         svc = SVC(probability=True)
         pu_estimator = ElkanotoPuClassifier(estimator=svc, hold_out_ratio=0.2)
         pu_estimator.fit(X, y)
         scaler = MinMaxScaler()
         y_pred = pu_estimator.predict(test_x)
         y_pred = np.where(y_pred < 0, 0, y_pred)
-        y_prob = scaler.fit_transform(pu_estimator.predict_proba(test_x).reshape(-1, 1))
+        y_prob = scaler.fit_transform(pu_estimator.predict_proba(test_x).reshape(-1, 1)).reshape(-1)
         print('Anomaly Detection report:')
         print(classification_report(y_true=test_y, y_pred=y_pred, digits=5))
         print('Anomaly Detection AUC-ROC: {:.5f}'.format(roc_auc_score(test_y, y_pred)))
         print('Anomaly Detection AUC-PR: {:.5f}'.format(average_precision_score(test_y, y_pred)))
+        print('Anomaly Detection FPR-AT-95-TPR: {:.5f}'.format(
+            utils.getfpr95tpr(y_true=test_y, dist=y_prob)))
     print('done')
 
 

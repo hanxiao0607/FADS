@@ -2,8 +2,9 @@ import torch
 import numpy as np
 from tqdm.auto import tqdm
 from torch.utils.data import TensorDataset, DataLoader
-from models.pu import PUNNLoss
+from Baslines.models.pu import PUNNLoss
 from sklearn.metrics import classification_report, roc_auc_score, average_precision_score
+from Baslines import utils
 
 
 
@@ -84,6 +85,7 @@ def test_pu(model, dataloader, quant, use_gpu, pi=0, epochs=0):
         print(classification_report(y_true=y, y_pred=pred, digits=5))
         print('Anomaly Detection AUC-ROC: {:.5f}'.format(roc_auc_score(y, pred)))
         print('Anomaly Detection AUC-PR: {:.5f}'.format(average_precision_score(y, pred)))
+        print('Anomaly Detection FPR-AT-95-TPR: {:.5f}'.format(utils.getfpr95tpr(y_true=y, dist=prob.reshape(-1))))
 
     return accuracy, precision, recall
 
