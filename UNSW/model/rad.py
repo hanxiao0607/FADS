@@ -149,9 +149,8 @@ class RAD(object):
             max_reward = r_before
             max_seen = df_seen.copy()
             max_unseen = df_unseen_pseudo.copy()
-            # loss_lst = []
+            loss_lst = []
             for _ in tqdm(range(self.max_episode), desc="iterator {:d} train".format(i_iterator + 1)):
-                loss_lst = []
                 df_unseen, df_samples = generate_samples(df_unseen_pseudo, self.options['num_samples'])
                 df_samples_emb = prototrainer.in_embedding(df_samples, i_iterator)
                 actions = self.select_action(df_samples_emb.values)
@@ -165,8 +164,7 @@ class RAD(object):
                     max_seen = df_seen_episode.copy()
                     max_unseen = df_unseen_episode.copy()
                     max_reward = r_episode
-                self.finish_iterator(loss_lst)
-            # self.finish_iterator(loss_lst)
+            self.finish_iterator(loss_lst)
             print(f'prev reward {r_before} best reward {max_reward}')
             if max_reward > r_before:
                 prototrainer.update_best_model()
