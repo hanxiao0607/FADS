@@ -24,7 +24,7 @@ Reference: https://packaging.python.org/guides/installing-using-pip-and-virtual-
 
 ## Instructions
 
-Please download the datasets from: https://drive.google.com/drive/folders/1B3Y8oIvr4bS4IBO-3YzyXw1W6uWfZAxh?usp=sharing
+Please download the datasets from Google Drive: https://drive.google.com/drive/folders/1B3Y8oIvr4bS4IBO-3YzyXw1W6uWfZAxh?usp=sharing
 
 Clone the template project, replacing ``my-project`` with the name of the project you are creating:
 
