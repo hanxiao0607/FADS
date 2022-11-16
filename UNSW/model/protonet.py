@@ -558,7 +558,7 @@ class ProtoTrainer(object):
         print('Anomaly Detection AUC-ROC: {:.5f}'.format(roc_auc_score(test_true_ab, test_pred_ab)))
         print('Anomaly Detection AUC-PR: {:.5f}'.format(average_precision_score(test_true_ab, test_pred_ab)))
         print('Anomaly Detection FPR-AT-95-TPR: {:.5f}'.format(utils.getfpr95tpr(y_true=test_true_ab, dist=test_result['y_normal'])))
-        print(df_seen.groupby(['y_pred', 'y_true']).count())
+#         print(df_seen.groupby(['y_pred', 'y_true']).count())
 
 
 
