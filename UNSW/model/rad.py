@@ -135,7 +135,7 @@ class RAD(object):
         for i_iterator in range(self.max_iterators):
             if i_iterator == 0:
                 df_seen, df_seen_eval, df_unseen_pseudo, seen_f1_ad, seen_f1 = prototrainer.training_first(df_seen, df_unseen, df_sup, test_x, test_y)
-                prototrainer.training_baseline(df_seen, df_seen_eval, df_unseen, test_x, test_y)
+#                 prototrainer.training_baseline(df_seen, df_seen_eval, df_unseen, test_x, test_y)
             else:
                 n_min = max(0, math.floor(min(df_seen.loc[df_seen['y_pred'] > 0].groupby('y_pred').count()['y_true'])*0.6)//2)
                 if n_min >= self.options['n_support']:
