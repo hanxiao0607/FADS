@@ -44,3 +44,13 @@ Run and test:
         python3 main_UNSW.py
 
 ## Citation
+```
+@inproceedings{han2022few,
+  title={Few-shot Anomaly Detection and Classification Through Reinforced Data Selection},
+  author={Han, Xiao and Xu, Depeng and Yuan, Shuhan and Wu, Xintao},
+  booktitle={2022 IEEE International Conference on Data Mining (ICDM)},
+  pages={963--968},
+  year={2022},
+  organization={IEEE}
+}
+```
