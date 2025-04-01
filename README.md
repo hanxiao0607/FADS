@@ -4,14 +4,14 @@
 # FADS: Few-shot Anomaly Detection and Classification Through Reinforced Data Selection
 A Pytorch implementation of [FADS](https://ieeexplore.ieee.org/abstract/document/10027786).
 
-## Configuration
+## 🧰 Configuration
 - Ubuntu 20.04
 - NVIDIA driver 460.73.01 
 - CUDA 11.2
 - Python 3.9
 - PyTorch 1.9.0
 
-## Installation
+## ⚙️ Installation
 This code requires the packages listed in requirements.txt.
 A virtual environment is recommended to run this code
 
@@ -25,7 +25,7 @@ deactivate
 ```
 Reference: https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/
 
-## Instructions
+## 🚀 Instructions
 
 Please download the datasets from Google Drive: https://drive.google.com/drive/folders/1B3Y8oIvr4bS4IBO-3YzyXw1W6uWfZAxh?usp=sharing
 
@@ -42,7 +42,7 @@ Run and test:
         or
         python3 main_UNSW.py
 
-## Citation
+## 📄 Citation
 ```
 @inproceedings{han2022few,
   title={Few-shot Anomaly Detection and Classification Through Reinforced Data Selection},
